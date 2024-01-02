@@ -1,4 +1,4 @@
-import Wallet from "../../app/wallet";
+import Wallet from "../domain/wallet";
 
 class removeBudget {
   constructor(private wallet: Wallet, private name: string) {}

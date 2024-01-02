@@ -1,0 +1,11 @@
+services:
+    db:
+      image: postgres
+      restart: always
+      ports:
+        - 
+      environment:
+        POSTGRES_DB: financeflow
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: root
+

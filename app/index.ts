@@ -1,4 +1,4 @@
-import Wallet from "./wallet";
+import Wallet from "../api/domain/wallet";
 
 const forEnum = <T extends string, Res>(
   value: T,
@@ -16,7 +16,5 @@ console.log(myWallet);
 // myWallet.("Food", 5000);
 // const cashspace = myWallet.showBudget();
 // console.log(cashspace);
-
-
 
 // myWallet.removeBudget('habits lol')
