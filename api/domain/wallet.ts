@@ -6,12 +6,12 @@ type Objective = {
 class Wallet {
   constructor(
     public id: number,
-    public name: string,
-    public limit: number,
-    public budget: Objective[]
+    private name: string,
+    private limit: number,
+    private budget: Objective[]
   ) {
-    if (!this.name || !this.limit) {
-      throw new Error("MISSING PARAMS");
+    if (!id || !name || !limit || !budget) {
+      throw new Error("MISSING_PARAMETERS");
     }
   }
 

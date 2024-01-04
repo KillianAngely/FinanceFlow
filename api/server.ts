@@ -27,9 +27,17 @@ app.post("/wallet", async (req, res) => {
   }
 
   try {
-    const wid = await new CreateWallet(repository).execute(name, limit);
-    res.status(200).send(JSON.stringify({ wid }));
-    return;
+    const wid = await new CreateWallet(
+      {
+        async ok() {
+          res.status(200).send(JSON.stringify({ wid }));
+        },
+        async missingParams() {
+          res.status(400);
+        },
+      },
+      repository
+    ).execute(name, limit);
   } catch (err) {
     res.status(500);
     return;
@@ -68,9 +76,17 @@ app.post("/wallet/:id/removebudget", async (req, res) => {
     name: string;
   };
   try {
-    const uc = await new removeBudget(repository).execute(wid, name);
-    res.status(200);
-    return;
+    const uc = await new removeBudget(
+      {
+        async ok() {
+          res.status(200);
+        },
+        async notFound() {
+          res.status(404);
+        },
+      },
+      repository
+    ).execute(wid, name);
   } catch (err) {
     res.status(500);
     return;
@@ -80,9 +96,17 @@ app.post("/wallet/:id/removebudget", async (req, res) => {
 app.post("/wallet/:id/show", async (req, res) => {
   const wid: number = +req.params.id;
   try {
-    const uc = await new ShowBudget(repository).execute(wid);
-    res.status(200).send(JSON.stringify({ uc }));
-    return;
+    const uc = await new ShowBudget(
+      {
+        async ok() {
+          res.status(200).send(JSON.stringify({ uc }));
+        },
+        async notFound() {
+          res.status(404);
+        },
+      },
+      repository
+    ).execute(wid);
   } catch (err) {
     res.status(500);
     return;
@@ -96,14 +120,23 @@ app.post("/wallet/:id/update", async (req, res) => {
     amount: number;
   };
   try {
-    const uc = await new updateBudget(repository).execute(wid, name, amount);
-    res.status(200).send(JSON.stringify({ uc }));
-    return;
+    const uc = await new updateBudget(
+      {
+        async notFound() {
+          res.status(404);
+        },
+        async ok() {
+          res.status(200);
+        },
+      },
+      repository
+    ).execute(wid, name, amount);
   } catch (err) {
     res.status(500);
     return;
   }
 });
+//SpendMoney
 app.post("/wallet/:id/spend", async (req, res) => {
   const wid: number = +req.params.id;
   const { name, spend } = req.body as {
@@ -111,12 +144,22 @@ app.post("/wallet/:id/spend", async (req, res) => {
     spend: number;
   };
   try {
-    const uc = await new SpendMoney(repository).execute(wid, name, spend);
-    res.status(200);
-    return;
+    const uc = await new SpendMoney(
+      {
+        async ok() {
+          res.status(200);
+        },
+        async Insufficient_funds() {
+          res.status(503);
+        },
+        async notFound() {
+          res.status(404);
+        },
+      },
+      repository
+    ).execute(wid, name, spend);
   } catch (err) {
     res.status(500);
-    return;
   }
 });
 
