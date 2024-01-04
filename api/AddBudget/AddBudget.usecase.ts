@@ -22,7 +22,7 @@ export class AddBudget<OkType, NotFoundType, BudgetLimitExceededType> {
       return this.presenter.notFound();
     }
 
-    const res = wallet.addBudget(name, amount);
+    const res = wallet.addBudgets(name, amount);
     if (res === "BUDGET_LIMIT_EXCEEDED") {
       return this.presenter.budgetLimitExceeded();
     }
