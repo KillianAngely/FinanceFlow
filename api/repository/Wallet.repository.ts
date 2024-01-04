@@ -21,4 +21,14 @@ export class WalletRepository implements IWalletAggregateRepository {
     }
     console.log(db);
   }
+
+  async remove(wallet: Wallet) {
+    const w = db.findIndex((it) => it.id === wallet.id);
+    if (w === -1) {
+      db.slice(w, 1);
+    } else {
+      db[w] = wallet;
+    }
+    console.log(db);
+  }
 }

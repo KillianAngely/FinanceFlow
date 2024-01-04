@@ -76,7 +76,11 @@ class Wallet {
     return "OK";
   }
 
-  showBudget() {
+  budgetConsumtion() {
+    return this.limit - this.sumBudget();
+  }
+
+  private sumBudget() {
     const totalAmount = this.budget.reduce(
       (total, budget) => total + budget.amount,
       0
