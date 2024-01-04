@@ -1,4 +1,4 @@
-import Wallet from "../api/domain/wallet";
+import Wallet from "../api/domain/Wallet.aggregate";
 
 const forEnum = <T extends string, Res>(
   value: T,

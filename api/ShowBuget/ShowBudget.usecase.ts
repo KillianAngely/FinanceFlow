@@ -1,7 +1,7 @@
 import { IWalletAggregateRepository } from "../repository/Wallet.repository.interface";
 
 interface IShowBugetPresenter<OkType, NotFoundType> {
-  ok(): Promise<OkType>;
+  ok(res: number): Promise<OkType>;
   notFound(): Promise<NotFoundType>;
 }
 
@@ -18,6 +18,6 @@ export class ShowBudget<OkType, NotFoundType> {
       return this.presenter.notFound();
     }
 
-    return this.presenter.ok(), wallet.budgetConsumtion();
+    return this.presenter.ok(wallet.budgetConsumtion());
   }
 }

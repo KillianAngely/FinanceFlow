@@ -7,6 +7,7 @@ import { removeBudget } from "./RemoveBudget/RemoveBudget.usecase";
 import { ShowBudget } from "./ShowBuget/ShowBudget.usecase";
 import { updateBudget } from "./UpdateBuget/updateBudget.usecase";
 import { SpendMoney } from "./SpendMoney/spendmoney.usecase";
+import { DumpWallet } from "./DumpWallet/DumpWallet.usecase";
 
 const port = 3000;
 const app = express();
@@ -20,10 +21,12 @@ const repository = new WalletRepository();
 
 // createWallet
 app.post("/wallet", async (req, res) => {
-  const { name, limit } = req.body;
+  const { name, limit } = req.body as {
+    name: string;
+    limit: number;
+  };
   if (!name || !limit) {
-    res.status(400);
-    return;
+    return res.status(400);
   }
 
   try {
@@ -32,17 +35,14 @@ app.post("/wallet", async (req, res) => {
         async ok() {
           res.status(200).send(JSON.stringify({ wid }));
         },
-        async missingParams() {
-          res.status(400);
-        },
       },
       repository
     ).execute(name, limit);
   } catch (err) {
-    res.status(500);
-    return;
+    return res.status(500);
   }
 });
+
 //addbudget
 app.post("/wallet/:id/addbudget", async (req, res) => {
   const wid: number = +req.params.id;
@@ -50,6 +50,9 @@ app.post("/wallet/:id/addbudget", async (req, res) => {
     name: string;
     amount: number;
   };
+  if (!name || !amount) {
+    return res.status(400);
+  }
   try {
     await new AddBudget(
       {
@@ -66,17 +69,21 @@ app.post("/wallet/:id/addbudget", async (req, res) => {
       repository
     ).execute(wid, name, amount);
   } catch (err) {
-    res.status(500);
+    return res.status(500);
   }
 });
+
 //removebudget
 app.post("/wallet/:id/removebudget", async (req, res) => {
   const wid: number = +req.params.id;
   const { name } = req.body as {
     name: string;
   };
+  if (!name) {
+    return res.status(400);
+  }
   try {
-    const uc = await new removeBudget(
+    await new removeBudget(
       {
         async ok() {
           res.status(200);
@@ -88,18 +95,18 @@ app.post("/wallet/:id/removebudget", async (req, res) => {
       repository
     ).execute(wid, name);
   } catch (err) {
-    res.status(500);
-    return;
+    return res.status(500);
   }
 });
+
 //showWallet
-app.post("/wallet/:id/show", async (req, res) => {
+app.get("/wallet/:id/show", async (req, res) => {
   const wid: number = +req.params.id;
   try {
-    const uc = await new ShowBudget(
+    await new ShowBudget(
       {
-        async ok() {
-          res.status(200).send(JSON.stringify({ uc }));
+        async ok(walletCon) {
+          res.status(200).send(JSON.stringify(walletCon));
         },
         async notFound() {
           res.status(404);
@@ -108,10 +115,10 @@ app.post("/wallet/:id/show", async (req, res) => {
       repository
     ).execute(wid);
   } catch (err) {
-    res.status(500);
-    return;
+    return res.status(500);
   }
 });
+
 //updateWallet
 app.post("/wallet/:id/update", async (req, res) => {
   const wid: number = +req.params.id;
@@ -119,8 +126,11 @@ app.post("/wallet/:id/update", async (req, res) => {
     name: string;
     amount: number;
   };
+  if (!name || !amount) {
+    return res.status(400);
+  }
   try {
-    const uc = await new updateBudget(
+    await new updateBudget(
       {
         async notFound() {
           res.status(404);
@@ -132,10 +142,10 @@ app.post("/wallet/:id/update", async (req, res) => {
       repository
     ).execute(wid, name, amount);
   } catch (err) {
-    res.status(500);
-    return;
+    return res.status(500);
   }
 });
+
 //SpendMoney
 app.post("/wallet/:id/spend", async (req, res) => {
   const wid: number = +req.params.id;
@@ -143,8 +153,11 @@ app.post("/wallet/:id/spend", async (req, res) => {
     name: string;
     spend: number;
   };
+  if (!name || !spend) {
+    return res.status(400);
+  }
   try {
-    const uc = await new SpendMoney(
+    await new SpendMoney(
       {
         async ok() {
           res.status(200);
@@ -159,7 +172,26 @@ app.post("/wallet/:id/spend", async (req, res) => {
       repository
     ).execute(wid, name, spend);
   } catch (err) {
-    res.status(500);
+    return res.status(500);
+  }
+});
+
+app.get("/wallet/:id/dump", async (req, res) => {
+  const wid: number = +req.params.id;
+  try {
+    const w = await new DumpWallet(
+      {
+        async notFound() {
+          res.status(404);
+        },
+        async ok() {
+          res.status(200).send(JSON.stringify(w));
+        },
+      },
+      repository
+    );
+  } catch (err) {
+    return res.status(500);
   }
 });
 
