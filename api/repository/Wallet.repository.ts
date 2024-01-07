@@ -39,13 +39,11 @@ export class WalletRepository implements IWalletAggregateRepository {
   async remove(wallet: Wallet) {
     const w = db.findIndex((it) => it.id === wallet.id);
     if (w === -1) {
-      db.slice(w, 1);
-    } else {
-      db[w] = wallet.toDto();
+      return "NOT_FOUND";
     }
+    db.splice(w, 1);
     console.log(db);
   }
-
   async findReadModelById(id: number) {
     const dto = db.find((it) => it.id === id);
     if (!dto) {

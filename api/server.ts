@@ -8,6 +8,7 @@ import { ShowBudget } from "./ShowBuget/ShowBudget.usecase";
 import { updateBudget } from "./UpdateBuget/updateBudget.usecase";
 import { SpendMoney } from "./SpendMoney/spendmoney.usecase";
 import { DumpWallet } from "./DumpWallet/DumpWallet.usecase";
+import { DropWallet } from "./DropWallet/DropWallet.usecase";
 
 const port = 3000;
 const app = express();
@@ -176,6 +177,7 @@ app.post("/wallet/:id/spend", async (req, res) => {
   }
 });
 
+//Dump wallet
 app.get("/wallet/:id/dump", async (req, res) => {
   const wid: number = +req.params.id;
   try {
@@ -186,6 +188,26 @@ app.get("/wallet/:id/dump", async (req, res) => {
         },
         async ok(wallet) {
           res.status(200).send(JSON.stringify(wallet));
+        },
+      },
+      repository
+    ).execute(wid);
+  } catch (err) {
+    return res.status(500);
+  }
+});
+
+//Drop Wallet
+app.get("/wallet/:id/drop", async (req, res) => {
+  const wid: number = +req.params.id;
+  try {
+    await new DropWallet(
+      {
+        async notFound() {
+          res.status(404);
+        },
+        async ok() {
+          res.status(200);
         },
       },
       repository
