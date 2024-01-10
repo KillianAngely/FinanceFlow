@@ -27,7 +27,7 @@ app.post("/wallet", async (req, res) => {
     limit: number;
   };
   if (!name || !limit) {
-    return res.status(400);
+    return res.status(400).send("Invalid request");
   }
 
   try {
@@ -37,13 +37,13 @@ app.post("/wallet", async (req, res) => {
           res.status(200).send(JSON.stringify({ walletId }));
         },
         async invalid() {
-          res.status(400);
+          res.status(400).send("Invalid request");
         },
       },
       repository
     ).execute(name, limit);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -54,23 +54,26 @@ app.post("/wallet/:id/addbudget", async (req, res) => {
     name: string;
     amount: number;
   };
+  if (!name || !amount) {
+    return res.status(400).send("Invalid request");
+  }
   try {
     await new AddBudget(
       {
         async budgetLimitExceeded() {
-          res.status(400);
+          res.status(400).send("budgetLimitExceeded");
         },
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
         async ok() {
-          res.status(200);
+          res.status(200).send("OK!");
         },
       },
       repository
     ).execute(wid, name, amount);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -81,22 +84,22 @@ app.post("/wallet/:id/removebudget", async (req, res) => {
     name: string;
   };
   if (!name) {
-    return res.status(400);
+    return res.status(400).send("Invalid request");
   }
   try {
     await new removeBudget(
       {
         async ok() {
-          res.status(200);
+          res.status(200).send("OK!");
         },
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
       },
       repository
     ).execute(wid, name);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -110,13 +113,13 @@ app.get("/wallet/:id/show", async (req, res) => {
           res.status(200).send(JSON.stringify(walletCon));
         },
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
       },
       repository
     ).execute(wid);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -128,22 +131,22 @@ app.post("/wallet/:id/update", async (req, res) => {
     amount: number;
   };
   if (!name || !amount) {
-    return res.status(400);
+    return res.status(400).send("Invalid request");
   }
   try {
     await new updateBudget(
       {
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
         async ok() {
-          res.status(200);
+          res.status(200).send("OK!");
         },
       },
       repository
     ).execute(wid, name, amount);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -155,25 +158,25 @@ app.post("/wallet/:id/spend", async (req, res) => {
     spend: number;
   };
   if (!name || !spend) {
-    return res.status(400);
+    return res.status(400).send("Invalid request");
   }
   try {
     await new SpendMoney(
       {
         async ok() {
-          res.status(200);
+          res.status(200).send("OK!");
         },
         async Insufficient_funds() {
-          res.status(503);
+          res.status(503).send("Unhautorized");
         },
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
       },
       repository
     ).execute(wid, name, spend);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -184,7 +187,7 @@ app.get("/wallet/:id/dump", async (req, res) => {
     await new DumpWallet(
       {
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
         async ok(wallet) {
           res.status(200).send(JSON.stringify(wallet));
@@ -193,7 +196,7 @@ app.get("/wallet/:id/dump", async (req, res) => {
       repository
     ).execute(wid);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -204,16 +207,16 @@ app.get("/wallet/:id/drop", async (req, res) => {
     await new DropWallet(
       {
         async notFound() {
-          res.status(404);
+          res.status(404).send("notFound");
         },
         async ok() {
-          res.status(200);
+          res.status(200).send("OK!");
         },
       },
       repository
     ).execute(wid);
   } catch (err) {
-    return res.status(500);
+    return res.status(500).send("Internal Server Error");
   }
 });
 

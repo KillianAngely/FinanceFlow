@@ -19,6 +19,10 @@ export class removeBudget<OkType, NotFoundType> {
 
     const res = wallet.removeBudget(name);
 
+    if (res === "NOT_FOUND") {
+      return this.presenter.notFound();
+    }
+
     await this.repository.save(wallet);
 
     return this.presenter.ok();
