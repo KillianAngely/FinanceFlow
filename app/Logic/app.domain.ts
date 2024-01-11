@@ -1,5 +1,3 @@
-import { run } from "node:test";
-import { AddBudget } from "../../api/AddBudget/AddBudget.usecase";
 import { httpClient } from "../http-client/http-client";
 
 export class AppBusinessDomain {
@@ -171,32 +169,36 @@ export class AppBusinessDomain {
       }
     }
   }
+
+  async cashSpace(walletId: number) {
+    try {
+      const response = await httpClient.get(`/wallet/${walletId}/cashspace`);
+      return response.data;
+    } catch (error: string | number | any) {
+      if (error.response.status === 404) {
+        console.log("Not Found");
+        return;
+      }
+      if (error.response.status === 500) {
+        console.log("Internal Server Error");
+        return;
+      }
+    }
+  }
 }
 
 //execute
 
 const appBusinessDomain = new AppBusinessDomain();
-const res = appBusinessDomain.createWallet("My Wallet", 100).then((res) => {
-  appBusinessDomain.addBudget(res.walletId, "vetements", 20);
-  appBusinessDomain.addBudget(res.walletId, "nourriture", 30);
-  // //remove budget
-  appBusinessDomain.removeBudget(res.walletId, "vetements");
-  // show budget
+const res = appBusinessDomain.createWallet("My Wallet", 1071).then((res) => {
+  appBusinessDomain.addBudget(res.walletId, "Londres", 250);
+  appBusinessDomain.addBudget(res.walletId, "Divers & abonnements", 142);
+  appBusinessDomain.addBudget(res.walletId, "Savings", 375);
+  appBusinessDomain.addBudget(res.walletId, "Mathys", 50);
+  appBusinessDomain.addBudget(res.walletId, "PEL", 45);
   appBusinessDomain.showBudget(res.walletId);
-  // //update budget
-  appBusinessDomain.updateBuget(res.walletId, "nourriture", 50);
-  //show budget
-  appBusinessDomain.showBudget(res.walletId);
-  // //spend money
-  appBusinessDomain.spendMoney(res.walletId, "nourriture", 20);
-  //show budget
-  appBusinessDomain.showBudget(res.walletId);
-  // //dump wallet
+  appBusinessDomain.cashSpace(1);
   appBusinessDomain.dumpWallet(res.walletId).then((res) => {
-    console.log(res);
-  });
-  // //drop wallet
-  appBusinessDomain.dropWallet(res.walletId).then((res) => {
     console.log(res);
   });
 });

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon api/server.ts",
-    "dev":    "nodemon app/Logic/app.domain.ts"
+    "dev": "nodemon app/Logic/app.domain.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

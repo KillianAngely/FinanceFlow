@@ -50,7 +50,7 @@ export class WalletReadModel {
     return this.limit - this.sumBudget();
   }
 
-  private sumBudget() {
+  sumBudget() {
     const totalAmount = this.budgets.reduce(
       (total, budget) => total + budget.amount,
       0

@@ -5,6 +5,7 @@ interface IDumpWallet<OkType, NotFoundType> {
     id: number;
     name: string;
     limit: number;
+    cosumtion: number;
     cashspace: number;
     budgets: { name: string; amount: number }[];
   }): Promise<OkType>;
@@ -26,7 +27,8 @@ export class DumpWallet<OkType, NotFoundType> {
       id: rm.getId(),
       name: rm.getName(),
       limit: rm.getLimit(),
-      cashspace: rm.budgetConsumtion(),
+      cosumtion: rm.budgetConsumtion(),
+      cashspace: rm.sumBudget(),
       budgets: rm.getBudgets(),
     });
   }

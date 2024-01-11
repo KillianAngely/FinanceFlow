@@ -9,6 +9,7 @@ import { updateBudget } from "./UpdateBuget/updateBudget.usecase";
 import { SpendMoney } from "./SpendMoney/spendmoney.usecase";
 import { DumpWallet } from "./DumpWallet/DumpWallet.usecase";
 import { DropWallet } from "./DropWallet/DropWallet.usecase";
+import { CashSpace } from "./ShowCash/ShowCashSpace.usecase";
 
 const port = 3000;
 const app = express();
@@ -211,6 +212,26 @@ app.get("/wallet/:id/drop", async (req, res) => {
         },
         async ok() {
           res.status(200).send("OK!");
+        },
+      },
+      repository
+    ).execute(wid);
+  } catch (err) {
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
+//view cosumption
+app.get("/wallet/:id/cashspace", async (req, res) => {
+  const wid: number = +req.params.id;
+  try {
+    await new CashSpace(
+      {
+        async ok(walletCon) {
+          res.status(200).send(JSON.stringify(walletCon));
+        },
+        async notFound() {
+          res.status(404).send("notFound");
         },
       },
       repository
