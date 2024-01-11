@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon api/server.ts",
-    "dev": "nodemon app/Logic/app.domain.ts"
+    "start": "nodemon server.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
