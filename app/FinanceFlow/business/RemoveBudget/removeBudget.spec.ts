@@ -1,6 +1,6 @@
 import { AddBudgetService } from "../AddBudget/addBudget";
 import { CreateWalletService } from "../CreateWallet/createWallet";
-import { RemoveBudgetService } from "./RemoveBudget";
+import { RemoveBudgetService } from "./removeBudget";
 
 test("Remove a budget", async () => {
   const walletId: number = await new CreateWalletService().execute(

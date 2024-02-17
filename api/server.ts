@@ -174,7 +174,7 @@ app.post("/wallet/:id/spend", async (req, res) => {
           res.status(200).send("OK!");
         },
         async Insufficient_funds() {
-          res.status(503).send("Unhautorized");
+          res.status(503).send("Unauthorized");
         },
         async notFound() {
           res.status(404).send("notFound");
