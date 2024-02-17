@@ -30,6 +30,12 @@ app.post("/wallet", async (req, res) => {
   if (!name || !limit) {
     return res.status(400).send("Invalid request");
   }
+  if (typeof name !== "string") {
+    return res.status(400).send("Invalid request");
+  }
+  if (typeof limit !== "number") {
+    return res.status(400).send("Invalid request");
+  }
 
   try {
     await new CreateWallet(
@@ -124,7 +130,7 @@ app.get("/wallet/:id/show", async (req, res) => {
   }
 });
 
-//updateWallet
+//updatebudget
 app.post("/wallet/:id/update", async (req, res) => {
   const wid: number = +req.params.id;
   const { name, amount } = req.body as {
