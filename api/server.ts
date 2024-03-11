@@ -131,7 +131,7 @@ app.get("/wallet/:id/show", async (req, res) => {
 });
 
 //updatebudget
-app.post("/wallet/:id/update", async (req, res) => {
+app.post("/wallet/:id/updatebudget", async (req, res) => {
   const wid: number = +req.params.id;
   const { name, amount } = req.body as {
     name: string;

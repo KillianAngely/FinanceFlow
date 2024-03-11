@@ -23,13 +23,19 @@ export class DumpWallet<OkType, NotFoundType> {
       return this.presenter.notFound();
     }
 
+    const dto = rm.toDto();
     return this.presenter.ok({
-      id: rm.getId(),
-      name: rm.getName(),
-      limit: rm.getLimit(),
+      id: dto.id,
+      name: dto.name,
+      limit: dto.limit,
       cosumtion: rm.budgetConsumtion(),
       cashspace: rm.sumBudget(),
-      budgets: rm.getBudgets(),
+      budgets: dto.budgets.map((b) => {
+        return {
+          name: b.name,
+          amount: b.amount,
+        };
+      }),
     });
   }
 }

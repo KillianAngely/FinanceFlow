@@ -27,25 +27,6 @@ export class WalletReadModel {
     private budgets: Budget[]
   ) {}
 
-  getId() {
-    return this.id;
-  }
-
-  getName() {
-    return this.name;
-  }
-
-  getLimit() {
-    return this.limit;
-  }
-
-  getBudgets() {
-    return this.budgets.map(({ amount, name }) => ({
-      name,
-      amount,
-    }));
-  }
-
   budgetConsumtion() {
     return this.limit - this.sumBudget();
   }
@@ -57,5 +38,19 @@ export class WalletReadModel {
     );
     const remainingAmount = this.limit - totalAmount;
     return remainingAmount;
+  }
+
+  toDto() {
+    return {
+      id: this.id,
+      name: this.name,
+      limit: this.limit,
+      budgets: this.budgets.map(() => {
+        return {
+          name: this.name,
+          amount: this.limit,
+        };
+      }),
+    };
   }
 }

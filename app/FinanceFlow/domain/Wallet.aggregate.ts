@@ -7,7 +7,7 @@ export const create = async (name: string, limit: number) => {
     body: JSON.stringify({ name, limit }),
   });
   const data = await response.json();
-  return data.walletId;
+  return data as number;
 };
 
 export const addBudget = async (
@@ -25,10 +25,6 @@ export const addBudget = async (
       body: JSON.stringify({ name, amount }),
     }
   );
-
-  const data = await response.text();
-
-  return data;
 };
 
 export const removeBudget = async (walletId: number, budgetName: string) => {
@@ -42,10 +38,6 @@ export const removeBudget = async (walletId: number, budgetName: string) => {
       body: JSON.stringify({ name: budgetName }),
     }
   );
-
-  const data = await response.text();
-
-  return data;
 };
 
 export const updateBudget = async (
@@ -53,35 +45,25 @@ export const updateBudget = async (
   budgetName: string,
   amount: number
 ) => {
-  const response = await fetch(
-    `http://localhost:3000/wallet/${walletId}/update`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ budgetName, amount }),
-    }
-  );
-  const data = await response.text();
-  return data;
+  await fetch(`http://localhost:3000/wallet/${walletId}/updatebudget`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ budgetName, amount }),
+  });
 };
 
 export const dropWallet = async (walletId: number) => {
-  const response = await fetch(
-    `http://localhost:3000/wallet/${walletId}/drop`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  const data = await response.text();
-  return data;
+  await fetch(`http://localhost:3000/wallet/${walletId}/drop`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 };
 
-export const dumpWallet = async (walletId: number) => {
+export const refreshWallet = async (walletId: number) => {
   const response = await fetch(
     `http://localhost:3000/wallet/${walletId}/dump`,
     {
@@ -93,20 +75,6 @@ export const dumpWallet = async (walletId: number) => {
     }
   );
   const data = await response.json();
-  return data;
-};
-
-export const showWallet = async (walletId: number) => {
-  const response = await fetch(
-    `http://localhost:3000/wallet/${walletId}/show`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  const data = await response.text();
   return data;
 };
 
@@ -139,6 +107,6 @@ export const spendMoney = async (
       body: JSON.stringify({ name, spend }),
     }
   );
-  const data = await response.text();
+  const data = await response.json();
   return data;
 };
