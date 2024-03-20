@@ -8,7 +8,7 @@ import {
   updateBudget,
   showCash,
   spendMoney,
-} from "../domain/Wallet.aggregate";
+} from "../domain/Wallet.api";
 
 export const useWallet = () => {
   const [wallet, setWallet] = useState<{
@@ -17,10 +17,19 @@ export const useWallet = () => {
     limit: number;
   } | null>(null);
 
+  const refresh = async () => {
+    if (!wallet) {
+      return;
+    }
+
+    setWallet(await refreshWallet(wallet.id));
+  };
+
   return {
     wallet,
     create: async (name: string, limit: number) => {
-      const walletid: number = await create(name, limit);
+      const walletid = await create(name, limit);
+
       const wallet = await refreshWallet(walletid);
       setWallet(wallet);
     },
@@ -29,11 +38,9 @@ export const useWallet = () => {
         return "INVALID";
       }
 
-      const walletId = wallet.id;
-      await addBudget(walletId, name, limit);
+      await addBudget(wallet.id, name, limit);
 
-      const updatedWallet = await refreshWallet(walletId);
-      setWallet(updatedWallet);
+      refresh();
     },
     remove: async (name: string) => {
       if (!wallet) {
@@ -41,25 +48,32 @@ export const useWallet = () => {
       }
 
       await removeBudget(wallet.id, name);
-      const updatedWallet = await refreshWallet(wallet.id);
-      setWallet(updatedWallet);
+
+      refresh();
     },
+
     drop: async (walletId: number) => {
       await dropWallet(walletId);
+
       setWallet(null);
     },
+
     update: async (walletId: number, name: string, limit: number) => {
       await updateBudget(walletId, name, limit);
-      const wallet = await refreshWallet(walletId);
-      setWallet(wallet);
+
+      refresh();
     },
+
     cash: async (walletId: number) => {
       await showCash(walletId);
-      setWallet(await refreshWallet(walletId));
+
+      refresh();
     },
+
     spend: async (walletId: number, name: string, amount: number) => {
       await spendMoney(walletId, name, amount);
-      setWallet(await refreshWallet(walletId));
+
+      refresh();
     },
   };
 };
